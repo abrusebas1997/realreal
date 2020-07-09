@@ -8,8 +8,14 @@ from food_platform.models import (Answer, PickupTime, Foodriver, FoodriverAnswer
 
 
 class FoodonatorSignUpForm(UserCreationForm):
+    restaurant_name = forms.CharField(max_length=150)
+    email = forms.EmailField(max_length=150)
+    phone = forms.CharField(max_length=150, help_text='Contact phone number')
+
+    
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ('restaurant_name', 'email', 'phone')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -19,7 +25,25 @@ class FoodonatorSignUpForm(UserCreationForm):
         return user
 
 
+# class FoodriverSignUpForm(UserCreationForm):
+#     foodriver_name = forms.CharField(max_length=150)
+#     email = forms.EmailField(max_length=150)
+#     phone = forms.CharField(max_length=150, help_text='Contact phone number')
+#     requirements = forms.ModelMultipleChoiceField(
+#         queryset=Area.objects.all(),
+#         widget=forms.CheckboxSelectMultiple,
+#         required=True,
+#         help_text=('Don\'t worry if you don\'t have all of these yet, we will work with you to help you satisfy these requirements.')
+#     )
+#
+#     class Meta(UserCreationForm.Meta):
+#         model = User
+#         fields = ('foodriver_name', 'email', 'phone', 'requirements')
+
 class FoodriverSignUpForm(UserCreationForm):
+    foodriver_name = forms.CharField(max_length=150)
+    email = forms.EmailField(max_length=150)
+    phone = forms.CharField(max_length=150, help_text='Contact phone number')
     area = forms.ModelMultipleChoiceField(
         queryset=Urgency.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -28,6 +52,7 @@ class FoodriverSignUpForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
+        fields = ('foodriver_name', 'email', 'phone', 'requirements')
 
     @transaction.atomic
     def save(self):

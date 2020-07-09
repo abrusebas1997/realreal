@@ -68,8 +68,8 @@ class TakenPickupListView(ListView):
         queryset = self.request.user.foodriver.taken_pickups \
         # CHANGE SUBJECT FOR URGENCY
         # PUT THIS .order_by('pickup__urgency')
-            .select_related('pickup', 'pickup__urgency') \
-            .order_by('pickup__name')
+        .select_related('pickup', 'pickup__urgency') \
+        .order_by('pickup__name')
         return queryset
 
 
