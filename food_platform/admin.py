@@ -1,3 +1,5 @@
 from django.contrib import admin
+from food_platform.models import Foodriver
 
-# Register your models here.
+
+admin.site.register(Foodriver)
