@@ -7,7 +7,7 @@
       <thead>
         <tr>
           <th>Pickup</th>
-          <th>Urgency</th>
+          <th>Interested Area</th>
           <th>Score</th>
         </tr>
       </thead>
@@ -15,7 +15,7 @@
         {% for taken_pickup in taken_pickups %}
           <tr>
             <td>{{ taken_pickup.pickup.name }}</td>
-            <td>{{ taken_pickup.pickup.urgency.get_html_badge }}</td>
+            <td>{{ taken_pickup.pickup.interested_area.get_html_badge }}</td>
             <td>{{ taken_pickup.score }}</td>
           </tr>
         {% empty %}

@@ -42,18 +42,16 @@ class PickupListView(ListView):
     template_name = 'food_platform/foodonators/pickup_change_list.html'
 
     def get_queryset(self):
-        queryset = self.request.user.pickups \
-        #CHANGE THIS FOR urgency.select_related('urgency') \
-            .select_related('urgency') \
-            .annotate(pickup_times_count=Count('pickup_times', distinct=True)) \
-            .annotate(taken_count=Count('taken_pickups', distinct=True))
+        queryset = self.request.user.pickups.select_related('interested_area') .annotate(pickup_times_count=Count('pickup_times', distinct=True)) .annotate(taken_count=Count('taken_pickups', distinct=True))
+        #CHANGE THIS FOR interested_area.select_related('interested_area') \
+        # .select_related('interested_area') \.annotate(pickup_times_count=Count('pickup_times', distinct=True)) \.annotate(taken_count=Count('taken_pickups', distinct=True))
         return queryset
 
 @method_decorator([login_required, foodonator_required], name='dispatch')
 class PickupCreateView(CreateView):
     model = Pickup
-    #CHANGE THIS FOR urgency
-    fields = ('name', 'urgency', )
+    #CHANGE THIS FOR interested_area
+    fields = ('name', 'interested_area', )
     template_name = 'food_platform/foodonators/pickup_add_form.html'
 
     def form_valid(self, form):
@@ -66,8 +64,8 @@ class PickupCreateView(CreateView):
 @method_decorator([login_required, foodonator_required], name='dispatch')
 class PickupUpdateView(UpdateView):
     model = Pickup
-    #CHANGE THIS FOR urgency
-    fields = ('name', 'urgency', )
+    #CHANGE THIS FOR interested_area
+    fields = ('name', 'interested_area', )
     context_object_name = 'pickup'
     template_name = 'food_platform/foodonators/pickup_change_form.html'
 
@@ -133,7 +131,7 @@ def pickup_time_add(request, pk):
     pickup = get_object_or_404(Pickup, pk=pk, owner=request.user)
 
     if request.method == 'POST':
-        form = PickupForm(request.POST)
+        form = PickupTimeForm(request.POST)
         if form.is_valid():
             pickup_time = form.save(commit=False)
             pickup_time.pickup = pickup
@@ -158,7 +156,7 @@ def pickup_time_change(request, pickup_pk, pickup_time_pk):
     pickup_time = get_object_or_404(PickupTime, pk=pickup_time_pk, pickup=pickup)
 
     AnswerFormSet = inlineformset_factory(
-        pickup_time,  # parent model
+        PickupTime,  # parent model
         Answer,  # base model
         formset=BaseAnswerInlineFormSet,
         fields=('text', 'is_correct'),

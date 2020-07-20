@@ -5,7 +5,7 @@
 {% block content %}
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'foodonators:pickup_change_list' %}">My Quizzes</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'foodonators:pickup_change_list' %}">My Pickups</a></li>
       <li class="breadcrumb-item"><a href="{% url 'foodonators:pickup_change' pickup.pk %}">{{ pickup.name }}</a></li>
       <li class="breadcrumb-item"><a href="{% url 'foodonators:pickup_time_change' pickup.pk pickup_time.pk %}">{{ pickup_time.text }}</a></li>
       <li class="breadcrumb-item active" aria-current="page">Confirm deletion</li>

@@ -52,7 +52,8 @@ class PickupListView(ListView):
         foodriver = self.request.user.foodriver
         foodriver_area = foodriver.area.values_list('pk', flat=True)
         taken_pickups = foodriver.pickups.values_list('pk', flat=True)
-        queryset = Pickup.objects.filter(urgency__in=foodriver_area) \
+        # ??
+        queryset = Pickup.objects.filter(interested_area__in=foodriver_area) \
             .exclude(pk__in=taken_pickups) \
             .annotate(pickup_times_count=Count('pickup_times')) \
             .filter(pickup_times_count__gt=0)
@@ -65,11 +66,11 @@ class TakenPickupListView(ListView):
     template_name = 'food_platform/foodrivers/taken_pickup_list.html'
 
     def get_queryset(self):
-        queryset = self.request.user.foodriver.taken_pickups \
+        queryset = self.request.user.foodriver.taken_pickups.select_related('pickup', 'pickup__interested_area').order_by('pickup__name')
         # CHANGE SUBJECT FOR URGENCY
-        # PUT THIS .order_by('pickup__urgency')
-        .select_related('pickup', 'pickup__urgency') \
-        .order_by('pickup__name')
+        # PUT THIS .order_by('pickup__interested_area')
+        # .select_related('pickup', 'pickup__interested_area') \
+        # .order_by('pickup__name')
         return queryset
 
 
@@ -83,7 +84,7 @@ def take_pickup(request, pk):
         return render(request, 'foodrivers/taken_pickup.html')
     # this is a comment: questions=pickup_times
     total_pickup_times = pickup.pickup_times.count()
-    unanswered_pickup_times = foodrivers.get_unanswered_pickup_times(pickup)
+    unanswered_pickup_times = foodriver.get_unanswered_pickup_times(pickup)
     total_unanswered_pickup_times = unanswered_pickup_times.count()
     progress = 100 - round(((total_unanswered_pickup_times - 1) / total_pickup_times) * 100)
     pickup_time = unanswered_pickup_times.first()

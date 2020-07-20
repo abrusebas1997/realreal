@@ -7,8 +7,8 @@ class User(AbstractUser):
     is_foodriver = models.BooleanField(default=False)
     is_foodonator = models.BooleanField(default=False)
 
-# change for urgency
-class Urgency(models.Model):
+# change for interested_area
+class Interested_area(models.Model):
     name = models.CharField(max_length=30)
     color = models.CharField(max_length=7, default='#007bff')
 
@@ -25,7 +25,7 @@ class Urgency(models.Model):
 class Pickup(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='pickups')
     name = models.CharField(max_length=255)
-    urgency = models.ForeignKey(Urgency, on_delete=models.CASCADE, related_name='pickups')
+    interested_area = models.ForeignKey(Interested_area, on_delete=models.CASCADE, related_name='pickups')
 
     def __str__(self):
         return self.name
@@ -51,7 +51,7 @@ class Answer(models.Model):
 class Foodriver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     pickups = models.ManyToManyField(Pickup, through='TakenPickup')
-    area = models.ManyToManyField(Urgency, related_name='interested_foodrivers')
+    area = models.ManyToManyField(Interested_area, related_name='interested_foodrivers')
 
     def get_unanswered_pickup_times(self, pickup):
         answered_pickup_times = self.pickup_answers \
